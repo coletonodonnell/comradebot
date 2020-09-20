@@ -19,9 +19,6 @@ def main():
 
   client = commands.Bot(command_prefix='?')
   discord.Client.maximum_messages = 2000
-  # song_queue = asyncio.Queue()
-  # next_queue = asyncio.Event()
-  # client.loop.create_task(Music.queue_system())
 
   # Checks if bot is connected to guild 
   @client.event
