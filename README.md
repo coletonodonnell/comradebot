@@ -14,8 +14,13 @@ OS:
 Designed for a Linux based system, though migrating it over to another shouldn't be that hard.
 
 ## Install
+0. You will [need to create a bot for this to work](https://discord.com/developers/applications). This **does not have moderation, the idea is that the bot is for small friend groups where that isn't required.**
 1. Clone the repository and cd into it.
-2. Create a `.env` file with the following details: 
+2. Install the requirements: 
+```
+pip install -r requirements.txt
+```
+3. Create a `.env` file inside of the comradebot folder (the same folder that contains `main.py` with the following details: 
 ```
 # .env
 DISCORD_TOKEN = ""
