@@ -42,7 +42,7 @@ After=multi-user.target
 [Service]
 Type=simple
 User=admin
-ExecStart=/usr/bin/python /opt/emperorbot/main.py
+ExecStart=/usr/bin/python /path/to/bot/main.py
 Restart=always
 
 [Install]
