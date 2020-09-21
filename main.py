@@ -31,12 +31,7 @@ def main():
           f'{client.user} is connected to:\n'
           f'{guild.name} (id: {guild.id})'
       )
-  # User Verification + Welcome
-  @client.event
-  async def on_member_join(member):
-      await member.create_dm()
-      await member.dm_channel.send(f'Hi {member.name}! Welcome to {await client.fetch_guild(GUILD)}! Rules include: (but are not limited to)\n1.) Under no circumstances should you talk about this server outside of the server.\nThat is it, the only rule other than the obvious ones.')
-  
+      
   for filename in os.listdir("./cogs"):
     if filename.endswith(".py"):
       client.load_extension(f"cogs.{filename[:-3]}")
