@@ -85,20 +85,20 @@ class Starboard(commands.Cog):
                 })
               json.dump(data, x, indent=4, ensure_ascii=False, default=str)
                 
-    if reaction.count >= STARCOUNT_PLUS:
-      with open(f'{self.SYSTEMPATH}starboard.json', 'r') as x: # Open starboard.json in read mode as x
-        data = json.load(x) # Load the json as data
-        if messageId in data:
-          self.starlb_cook(memberid, 1)
-          starboard_message_id = data[messageId][0]['starboardid']
-          starboard_message = await self.client.get_channel(self.STARBOARD).fetch_message(starboard_message_id)
-          new_edit = f"{reaction.count} :star:"
-          await starboard_message.edit(content=new_edit)
-        if messageId not in data:
-          x = datetime.datetime.now()
-          current_time = x.strftime('%Y%m%d%H%M')
-          ERROR = f"If reaction.count >= {self.STARCOUNT_MINIMUM} AND if messageId not in data, send to errorlog. THIS SHOULD NEVER HAPPEN! Current time is {current_time}"
-          await self.client.get_channel(int(ERRORLOG)).send(content=ERROR)
+      if reaction.count >= STARCOUNT_PLUS:
+        with open(f'{self.SYSTEMPATH}starboard.json', 'r') as x: # Open starboard.json in read mode as x
+          data = json.load(x) # Load the json as data
+          if messageId in data:
+            self.starlb_cook(memberid, 1)
+            starboard_message_id = data[messageId][0]['starboardid']
+            starboard_message = await self.client.get_channel(self.STARBOARD).fetch_message(starboard_message_id)
+            new_edit = f"{reaction.count} :star:"
+            await starboard_message.edit(content=new_edit)
+          if messageId not in data:
+            x = datetime.datetime.now()
+            current_time = x.strftime('%Y%m%d%H%M')
+            ERROR = f"If reaction.count >= {self.STARCOUNT_MINIMUM} AND if messageId not in data, send to errorlog. THIS SHOULD NEVER HAPPEN! Current time is {current_time}"
+            await self.client.get_channel(int(ERRORLOG)).send(content=ERROR)
 
   @commands.Cog.listener()
   async def on_raw_reaction_remove(self, payload):
