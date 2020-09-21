@@ -6,3 +6,4 @@
 *.replit
 *.note
 *.mp3
+**/playlists/*.json
