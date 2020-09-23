@@ -1,3 +1,4 @@
+*.part
 *.env
 **/env
 **/.vscode
