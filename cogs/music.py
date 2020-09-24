@@ -169,21 +169,28 @@ class Music(commands.Cog):
       await asyncio.sleep(5)
       await message.delete()
 
-  @playlist.command(brief="Start a playlist with an optional vote", help="Use ?playlist start <playlist name>")
+  @playlist.command()
   # Start a playlist
   async def start(self, ctx, playlist): 
     if path.isfile(f"{self.SYSTEMPATH}/playlists/{playlist.lower()}.json"): # if playlist exist
-      count = self.connected_count(ctx) # count is equal to amount of people in call minus 2 at max
-      if count >= self.PLAYLIST_MINIMUM: # if count is >= playlist_minimum vote then do the following
-        await self.playlist_check(ctx, playlist, count, vote=True) # pass in vote = True
-      else:
-        await self.playlist_check(ctx, playlist, count) # Don't pass in vote = True
+      with open(f"{self.SYSTEMPATH}/playlists/{playlist.lower()}.json") as x:
+        data = json.load(x)
+        if data["playlist_data"]: # checks if the playlist has data in it. 
+          count = self.connected_count(ctx) # count is equal to amount of people in call minus 2 at max
+          if count >= self.PLAYLIST_MINIMUM: # if count is >= playlist_minimum vote then do the following
+            await self.playlist_check(ctx, playlist, count, vote=True) # pass in vote = True
+          else:
+            await self.playlist_check(ctx, playlist, count) # Don't pass in vote = True
+        else:
+          message = await ctx.send(f"`{playlist.lower()}` is empty, please add youtube links to it before attempting to play it.")
+          await asyncio.sleep(15)
+          await message.delete()
     else: # Do the following if playlist doesn't exist
       message = await ctx.send(f"`{playlist.lower()}` doesn't exist, are you sure you entered the right name?")
       await asyncio.sleep(10)
       await message.delete()
 
-  @playlist.command(brief="Stop a playlist with an optional vote", help="Use ?playlist stop")
+  @playlist.command()
   async def stop(self, ctx): # Starts a vote to stop a playlist currently running. 
     if self.playlist_trigger.locked():
       count = self.connected_count(ctx)
@@ -216,7 +223,7 @@ class Music(commands.Cog):
       await asyncio.sleep(20)
       await message.delete()
 
-  @playlist.command(brief="Create a playlist. Playlists can only be one word long, no spaces.", help="Use ?playlist create name")
+  @playlist.command()
   async def create(self, ctx, playlist): # Create a playlist
     if path.isfile(f"{self.SYSTEMPATH}/playlists/{playlist.lower()}.json"):
       message = await ctx.send(f"`{playlist.lower()}` already exists! Playlists are case insensitive and global, please choose another name.")
@@ -303,7 +310,7 @@ class Music(commands.Cog):
       await asyncio.sleep(15)
       await message.delete()
 
-  @playlist.command(brief="List a playlist", help="?playlist list <playlist name>")
+  @playlist.command()
   async def list(self, ctx, playlist):
     if path.isfile(f"{self.SYSTEMPATH}/playlists/{playlist.lower()}.json"):
       with open(f"{self.SYSTEMPATH}/playlists/{playlist.lower()}.json") as x:
@@ -320,7 +327,7 @@ class Music(commands.Cog):
       await asyncio.sleep(15)
       await message.delete()
       
-  @playlist.command(brief="Add a contributor to a playlist if you own it", help="?playlist add_contributor <playlist name> @TheContributor#0001")
+  @playlist.command()
   async def add_contributor(self, ctx, playlist, addition: discord.User): # add contributor to a playlist
     if path.isfile(f"{self.SYSTEMPATH}/playlists/{playlist.lower()}.json"):
       with open(f"{self.SYSTEMPATH}/playlists/{playlist.lower()}.json", "r") as x:
@@ -366,7 +373,7 @@ class Music(commands.Cog):
       await asyncio.sleep(15)
       await message.delete()
 
-  @playlist.command(brief="Remove a contributor from a playlist", help="?playlist remove_contributor <playlist name> @TheContributor#0001")
+  @playlist.command()
   async def remove_contributor(self, ctx, playlist, removal: discord.User): # remove contributor from a playlist 
     if path.isfile(f"{self.SYSTEMPATH}/playlists/{playlist.lower()}.json"):
       with open(f"{self.SYSTEMPATH}/playlists/{playlist.lower()}.json", "r") as x:
@@ -405,7 +412,7 @@ class Music(commands.Cog):
     if isinstance(error, commands.BadArgument):
       message = await ctx.send(f"{error}. Are you mentioning the contributor...?\n```?playlist remove_contributor <playlist name> @TheContributor#0001```")
 
-  @playlist.command(brief="List contributors in a playlist", help="?playlist list_contributor <playlist name>")
+  @playlist.command()
   async def list_contributor(self, ctx, playlist):
     if path.isfile(f"{self.SYSTEMPATH}/playlists/{playlist.lower()}.json"):
       with open(f"{self.SYSTEMPATH}/playlists/{playlist.lower()}.json", "r") as x:
@@ -428,7 +435,7 @@ class Music(commands.Cog):
       await message.delete()
   
   # Function deletes a playlist if they are a owner
-  @playlist.command(brief="Delete a playlist", help="?playlist delete <playlist name>")
+  @playlist.command()
   async def delete(self, ctx, playlist): # delete a playlist
     if path.isfile(f"{self.SYSTEMPATH}/playlists/{playlist.lower()}.json"):
       with open(f"{self.SYSTEMPATH}/playlists/{playlist.lower()}.json", "r") as x:
@@ -454,7 +461,7 @@ class Music(commands.Cog):
     else:
       message = await ctx.send(f"`{playlist.lower()}` doesn't exist, are you sure you entered the right name?")
 
-  @playlist.command(brief="List every playlist", help="?playlist listall")
+  @playlist.command()
   async def listall(self, ctx):
     playlist_glob = glob.glob(f'{self.SYSTEMPATH}playlists/*.json')
     path = len(f"{self.SYSTEMPATH}/playlists")
@@ -464,7 +471,7 @@ class Music(commands.Cog):
       with open(i) as x:
         data = json.load(x)
         owner = data["owner"]
-      playlist_entry = f"{playlist_name}: <@{owner}>"
+      playlist_entry = f"`{playlist_name}` by <@{owner}>"
       playlist_list.append(playlist_entry)
     playlist_list = sorted(playlist_list, key=str.lower)
     playlist_send = '\n'.join(playlist_list)
@@ -500,7 +507,7 @@ class Music(commands.Cog):
 
   # Play command, this must have a link
   @commands.has_role(DJ)
-  @commands.command(brief="Use this to play music!", help="Use ?play YouTube Link or Search")
+  @commands.command()
   async def play(self, ctx, *, search_term):
     if self.play_lock.is_set() == False:
       message = await ctx.send("Sorry, a playlist is either playing or is being queued, run `?playlist stop` to start a vote to stop the playlist.")
@@ -524,13 +531,13 @@ class Music(commands.Cog):
   @play.error
   async def play_error(self, ctx, error):
     if isinstance(error, commands.MissingRole):
-      message = await ctx.send("Sorry you don't have the DJ Role!")
+      message = await ctx.send()
       await asyncio.sleep(5)
       await message.delete()
 
   # Join the voice channel, but don't play anything
   @commands.has_role(DJ)
-  @commands.command(brief="This makes the bot join your Voice Channel")
+  @commands.command()
   async def join(self, ctx):
     if self.play_lock.is_set():
       channel = ctx.author.voice.channel
@@ -539,13 +546,13 @@ class Music(commands.Cog):
   @join.error
   async def join_error(self, ctx, error):
     if isinstance(error, commands.MissingRole):
-      message = await ctx.send("Sorry you don't have the DJ Role!")
+      message = await ctx.send()
       await asyncio.sleep(5)
       await message.delete()
 
   # Leave the voice channel
   @commands.has_role(DJ)
-  @commands.command(brief="This makes the bot leave the Voice Channel")
+  @commands.command()
   async def leave(self, ctx):
     if self.play_lock.is_set():
      await ctx.voice_client.disconnect()
@@ -553,13 +560,13 @@ class Music(commands.Cog):
   @leave.error
   async def leave_error(self, ctx, error):
     if isinstance(error, commands.MissingRole):
-      message = await ctx.send("Sorry you don't have the DJ Role!")
+      message = await ctx.send()
       await asyncio.sleep(5)
       await message.delete()
 
   # Skip the track
   @commands.has_role(DJ)
-  @commands.command(brief="Skips the currently playing song")
+  @commands.command()
   async def skip(self, ctx):
     if self.play_lock.is_set() == True:
       if Music.is_voice_connected(self, ctx) == True:
@@ -580,7 +587,7 @@ class Music(commands.Cog):
       await message.delete()
 
   @commands.has_role(DJ)
-  @commands.command(brief="Clears the queue.")
+  @commands.command()
   async def clear(self, ctx):
     if self.play_lock.is_set() == True:
       if self.is_voice_connected(ctx) == True:
