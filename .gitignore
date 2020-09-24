@@ -1,3 +1,4 @@
+*.part
 *.env
 **/env
 **/.vscode
@@ -6,3 +7,4 @@
 *.replit
 *.note
 *.mp3
+**/playlists/*.json
