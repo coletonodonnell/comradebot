@@ -33,6 +33,7 @@ STAFF_ROLE = ""
 DJ_ROLE = ""
 SYSTEMPATH = ""
 STARCOUNT_MINIMUM = ""
+PLAYLIST_VOTE_MINIMUM = ""
 ```
 
 You will have to fill in the details yourself, inside of the quotation marks. For Channels, the Guild, and roles, those are all the IDs. You will place them inside the quotation marks. The starcount minimum is for the starboard, and it is the minimum number of stars needed to get on the board. The systempath must be an absolute path from the root to the folder main.py is located in, eg. `/home/user/stuff/comradebot/`. **This must have a / at the end.** This is all you have to do. You can create a simple systemd file here to run the bot automatically: 
