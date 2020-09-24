@@ -18,20 +18,21 @@ def main():
   STARCOUNT_MINIMUM =int(os.getenv("STARCOUNT_MINIMUM")) # Starcount Minimum 
 
   client = commands.Bot(command_prefix='?')
+  client.remove_command('help')
   discord.Client.maximum_messages = 2000
 
   # Checks if bot is connected to guild 
   @client.event
   async def on_ready():
-      for guild in client.guilds:
-          if guild.name == GUILD:
-              break
+    for guild in client.guilds:
+        if guild.name == GUILD:
+            break
 
-      print(
-          f'{client.user} is connected to:\n'
-          f'{guild.name} (id: {guild.id})'
-      )
-      
+    print(
+        f'{client.user} is connected to:\n'
+        f'{guild.name} (id: {guild.id})'
+    )
+    
   for filename in os.listdir("./cogs"):
     if filename.endswith(".py"):
       client.load_extension(f"cogs.{filename[:-3]}")
