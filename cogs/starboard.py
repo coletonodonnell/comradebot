@@ -13,6 +13,7 @@ class Starboard(commands.Cog):
     self.SYSTEMPATH = os.getenv("SYSTEMPATH")
     self.STARCOUNT_MINIMUM = int(os.getenv("STARCOUNT_MINIMUM"))
     self.STARBOARD = int(os.getenv("STARBOARD_CHANNEL"))
+    self.ERRORLOG = int(os.getenv("ERROR_CHANNEL"))
 
   def starlb_cook(self, memberid, number, subtraction = False):
     with open(f'{self.SYSTEMPATH}starlb.json', 'r') as x: # Open starlb.json
@@ -98,7 +99,7 @@ class Starboard(commands.Cog):
             x = datetime.datetime.now()
             current_time = x.strftime('%Y%m%d%H%M')
             ERROR = f"If reaction.count >= {self.STARCOUNT_MINIMUM} AND if messageId not in data, send to errorlog. THIS SHOULD NEVER HAPPEN! Current time is {current_time}"
-            await self.client.get_channel(int(ERRORLOG)).send(content=ERROR)
+            await self.client.get_channel(int(self.ERRORLOG)).send(content=ERROR)
 
   @commands.Cog.listener()
   async def on_raw_reaction_remove(self, payload):
@@ -130,7 +131,7 @@ class Starboard(commands.Cog):
             if messageId not in data:
               current_time = datetime.datetime.strftime('%Y%m%d%H%M%S')
               ERROR = f"If reaction.count >= {self.STARCOUNT_MINIMUM} AND if messageId not in data, send to errorlog. THIS SHOULD NEVER HAPPEN! Current time is {current_time}"
-              await self.client.get_channel(int(ERRORLOG)).send(content=ERROR)
+              await self.client.get_channel(int(self.ERRORLOG)).send(content=ERROR)
 
   @commands.command(brief="Show the Star Leaderboard")
   async def starlb(self, ctx): # The ?starlb command
