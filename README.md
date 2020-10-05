@@ -28,6 +28,7 @@ pip install -r requirements.txt
 DISCORD_TOKEN = ""
 DISCORD_GUILD = ""
 STARBOARD_CHANNEL = ""
+WHOSWHO_CHANNEL = ""
 ERROR_CHANNEL = ""
 STAFF_ROLE = ""
 DJ_ROLE = ""
@@ -58,9 +59,10 @@ This bot isn't designed for a large server, in fact scaled high enough some func
 ## Features:
 - Starboard
 - Music with Playlists and voting Feature
-- More to come
+- Whoswho support, a system for tracking names of users for larger friend groups with people who may not know each other well. 
 
 ## Commands:
+(Staff commands are not included in the `?help` command)
 ### General:
 ```
 ?ping
@@ -127,4 +129,19 @@ Playlists:
 
 ?playlist listall
     List every playlist in the guild.
+```
+
+### Who is Who:
+```
+?whoswho initialize
+    Initializes a whoswho message in the whoswho channel. This stores a channel ID in whoswho.json. In the event the channel is deleted, manually delete the "message_id" variable inside of the json (along with the comma before.)
+
+?whoswho reload
+    Reloads the whoswho message. 
+
+?whoswho add @TheUser#0001 <First Name> <Last Name>
+    Add someone to the whoswho. You must mention the user, then include their first name and last name.
+
+?whoswho remove @TheUser#0001
+    Remove someone from the whoswho. You must mention the user.
 ```
