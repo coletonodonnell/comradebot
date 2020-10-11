@@ -22,7 +22,7 @@ Designed to be hosted a Linux based system, though migrating it over to another 
 ```
 pip install -r requirements.txt
 ```
-3. Create a `.env` file inside of the comradebot folder (the same folder that contains `main.py` with the following details: 
+3. Create a `.env` file inside of the comradebot folder (the same folder that contains `main.py`) with the following details: 
 ```
 # .env
 DISCORD_TOKEN = ""
