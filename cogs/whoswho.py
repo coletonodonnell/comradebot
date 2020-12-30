@@ -5,6 +5,7 @@ from dotenv import load_dotenv
 import discord
 import collections
 from discord.ext import commands
+from operator import itemgetter
 
 class WhoIsWho(commands.Cog):
     load_dotenv("../.env")
@@ -13,6 +14,21 @@ class WhoIsWho(commands.Cog):
         self.client = client
         self.SYSTEMPATH = os.getenv('SYSTEMPATH')
         self.WHOSWHO = int(os.getenv('WHOSWHO_CHANNEL'))
+
+    async def whoswho_init(self, data):
+        embed = discord.Embed(colour = 0xd4af37)
+        embed.set_author(name="Who is Who")
+        for i in data:
+            if i != "message_id":
+                lis = sorted(data[i], key=itemgetter(2, 1))
+                field_data = ""
+                for j in lis:
+                    field_data += f"<@{j[0]}> - {j[1]} {j[2]}\n"
+                embed.add_field(name=i, value=field_data[:-1], inline=False)
+
+        channel = self.client.get_channel(self.WHOSWHO)
+        message = await channel.fetch_message(data["message_id"])
+        await message.edit(embed=embed)
 
     @commands.group()
     @commands.has_role(STAFF)
@@ -55,6 +71,7 @@ class WhoIsWho(commands.Cog):
                     with open(f"{self.SYSTEMPATH}whoswho.json", "w") as x:
                         json.dump(data, x, indent=4)
                     await ctx.send("Successfully created the new WhosWho")
+                    await self.whoswho_init(data)
 
             else:
                 channel = self.client.get_channel(self.WHOSWHO)
@@ -71,18 +88,7 @@ class WhoIsWho(commands.Cog):
         with open(f"{self.SYSTEMPATH}whoswho.json", "r") as x:
             data = json.load(x)
             if "message_id" in data:
-                embed = discord.Embed(colour = 0xd4af37)
-                embed.set_author(name="Who is Who")
-                for i in data:
-                    if i != "message_id":
-                        field_data = ""
-                        for j in data[i]:
-                            field_data += f"<@{j[0]}> - {j[1]} {j[2]}\n"
-                        embed.add_field(name=i, value=field_data[:-1], inline=False)
-
-                channel = self.client.get_channel(self.WHOSWHO)
-                message = await channel.fetch_message(data["message_id"])
-                await message.edit(embed=embed)
+                await self.whoswho_init(data)
             else:
                 message = await ctx.send("A whoswho doesn't exist, please run `?whoswho initialize` to reload it.")
                 await asyncio.sleep(15)
@@ -116,19 +122,7 @@ class WhoIsWho(commands.Cog):
                         data = collections.OrderedDict(sorted(data.items()))
                         json.dump(data, x, indent=4)
 
-                    embed = discord.Embed(colour = 0xd4af37)
-                    embed.set_author(name="Who is Who")
-
-                    for i in data:
-                        if i != "message_id":
-                            field_data = ""
-                            for j in data[i]:
-                                field_data += f"<@{j[0]}> - {j[1]} {j[2]}\n"
-                            embed.add_field(name=i, value=field_data[:-1], inline=False)
-
-                    channel = self.client.get_channel(self.WHOSWHO)
-                    message = await channel.fetch_message(data["message_id"])
-                    await message.edit(embed=embed)
+                    await self.whoswho_init(data)
             else: 
                 message = await ctx.send("A whoswho doesn't exist, please run `?whoswho initialize` to begin adding/removing people to it.")
                 await asyncio.sleep(15)
@@ -161,17 +155,7 @@ class WhoIsWho(commands.Cog):
                     for i in list(data):
                         if bool(data[i]) == False:
                             del data[i]
-                    embed = discord.Embed(colour = 0xd4af37)
-                    embed.set_author(name="Who is Who")
-                    for i in data:
-                        if i != "message_id":
-                            field_data = ""
-                            for j in data[i]:
-                                field_data += f"<@{j[0]}> - {j[1]} {j[2]}\n"
-                            embed.add_field(name=i, value=field_data[:-1], inline=False)
-                    channel = self.client.get_channel(self.WHOSWHO)
-                    message = await channel.fetch_message(data["message_id"])
-                    await message.edit(embed=embed)
+                    await self.whoswho_init(data)
                     with open(f"{self.SYSTEMPATH}whoswho.json", "w") as x:
                         json.dump(data, x, indent=4)
 
