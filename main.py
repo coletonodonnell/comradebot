@@ -16,8 +16,6 @@ def main():
 
   files = {"whoswho.json", "starlb.json", "starboard.json"}
   for i in files:
-    print(os.path.isfile(f"{SYSTEMPATH}{i}"))
-    print(i)
     if os.path.isfile(f"{SYSTEMPATH}{i}") == False:
       f = open(i, "a")
       f.write("{\n}")
