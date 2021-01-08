@@ -14,6 +14,14 @@ def main():
   SYSTEMPATH = os.getenv('SYSTEMPATH') # System Path
   STAFF = int(os.getenv('STAFF_ROLE')) # Staff Role
 
+  files = {"whoswho.json", "starlb.json", "starboard.json"}
+  for i in files:
+    print(os.path.isfile(f"{SYSTEMPATH}{i}"))
+    print(i)
+    if os.path.isfile(f"{SYSTEMPATH}{i}") == False:
+      f = open(i, "a")
+      f.write("{\n}")
+      f.close
 
   client = commands.Bot(command_prefix='?')
   client.remove_command('help')
